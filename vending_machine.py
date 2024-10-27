@@ -23,6 +23,10 @@ class Product:
     def __str__(self):
         return f'Product(name={self.name}, price={self.price}, product_type={self.product_type})'
     
+    # def __eq__(self, value):
+    #     return self.price == value.price
+        
+    
     def __repr__(self):
         return str(self)
 
@@ -34,7 +38,7 @@ class VendingMachine(UserDict):
 
         self.__money = None
         self.money = money
-        
+
         super().__init__(products)
 
     @property
@@ -48,6 +52,22 @@ class VendingMachine(UserDict):
         if new_value < 0:
             raise ValueError("Money should be greater than or equals to zero")
         self.__money = new_value
+
+    def find_product(self, name: str, product_type: ProductType):
+        products_for_type = self.data[product_type]
+        for product in products_for_type:
+            if product.name == name:    
+                return product
+
+    def buy_product(self, name: str, product_type: ProductType, money_amount: int):
+        product = self.find_product(name, product_type)
+        change_amount = money_amount - product.price
+        if self.__money < change_amount:
+            raise ValueError("Not enough money in the machine")
+        
+        self.__money -= change_amount
+        return (product, change_amount)
+        
 
 """
 {
@@ -79,8 +99,8 @@ product_list = []
 # for product_type in ProductType:
 #     print(product_type.name)
 product_list.append(Product("Snickers", 20, ProductType.SNACK))
-product_list.append(Product("Snickers", 20, ProductType.SNACK))
-product_list.append(Product("Snickers", 20, ProductType.SNACK))
+product_list.append(Product("Mars", 20, ProductType.SNACK))
+product_list.append(Product("Bounty", 20, ProductType.SNACK))
 product_list.append(Product("Snickers", 20, ProductType.SNACK))
 
 product_list.append(Product("Coca Cola", 35, ProductType.DRINK))
@@ -89,7 +109,13 @@ product_list.append(Product("Coca Cola", 35, ProductType.DRINK))
 
 # print(sort_products(product_list))
 
-machine = VendingMachine(product_list, -1000)
+machine = VendingMachine(product_list, 10000)
+
+print(machine.buy_product("Snickers", ProductType.SNACK, 50))
+
+print(machine._VendingMachine__money)
+# print(machine.data[ProductType.SNACK])
+
 # print(dir(machine))
 # print(machine._VendingMachine__money)
 # machine.money = -10000
@@ -116,3 +142,17 @@ machine = VendingMachine(product_list, -1000)
 
 # my_default_dict['hello'] += "world!"
 # print(my_default_dict)
+
+# my_list = [1, 2, 3, 4, 5]
+# print(my_list)
+# my_list.remove(3)
+# print(my_list)
+
+# print(Product("Coca Cola", 35, ProductType.DRINK) == Product("Coca Cola", 35, ProductType.DRINK))
+
+# my_list = [Product("Coca Cola", 35, ProductType.DRINK), Product("Snickers", 20, ProductType.SNACK)]
+# for product in my_list:
+#     if product.name == 'Snickers':
+#         my_list.remove(product)
+
+# print(my_list)
