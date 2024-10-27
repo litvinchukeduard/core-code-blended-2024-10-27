@@ -1,5 +1,5 @@
 from enum import Enum, StrEnum, auto
-from collections import defaultdict
+from collections import defaultdict, UserDict
 '''
 Створити структуру класів, яка буде керувати апаратом для продуктів
 '''
@@ -26,6 +26,28 @@ class Product:
     def __repr__(self):
         return str(self)
 
+
+class VendingMachine(UserDict):
+    
+    def __init__(self, product_list: list[Product], money: int):
+        products = sort_products(product_list)
+
+        self.__money = None
+        self.money = money
+        
+        super().__init__(products)
+
+    @property
+    def money(self):
+        raise Exception("Access to money restricted")
+    
+    @money.setter
+    def money(self, new_value):
+        if type(new_value) != int:
+            raise TypeError("Money should be an int")
+        if new_value < 0:
+            raise ValueError("Money should be greater than or equals to zero")
+        self.__money = new_value
 
 """
 {
@@ -65,7 +87,21 @@ product_list.append(Product("Coca Cola", 35, ProductType.DRINK))
 product_list.append(Product("Coca Cola", 35, ProductType.DRINK))
 product_list.append(Product("Coca Cola", 35, ProductType.DRINK))
 
-print(sort_products(product_list))
+# print(sort_products(product_list))
+
+machine = VendingMachine(product_list, -1000)
+# print(dir(machine))
+# print(machine._VendingMachine__money)
+# machine.money = -10000
+
+# machine.money += 1000
+
+# print(machine.money)
+
+# print(machine.data)
+
+# print(machine[ProductType.SNACK])
+# print(machine.products)
 # product_two = Product("Snickers", 30, "snack")
 # product = Product("Snickers", 20, "snacc")
 # product_two = Product("Snickers", 30, "snack")
